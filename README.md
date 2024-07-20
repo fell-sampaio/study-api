@@ -20,13 +20,13 @@ API project for study. Application written with .NET Core API and Entity Framewo
 ### Create Migration
 
 ``` powershell
-dotnet ef migrations add <migration-name> --startup-project
+dotnet ef migrations add <migration-name>
 ```
 
 ### Run Migration
 
 ``` powershell
-dotnet ef database update --startup-project
+dotnet ef database update
 ```
 
 ### Generate Migration Script
