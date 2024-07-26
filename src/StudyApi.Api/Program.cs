@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudyApi.Data.Context;
+using AutoMapper.EquivalencyExpression;
+using StudyApi.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddAutoMapper(config =>
+{
+    config.AddCollectionMappers();
+}, typeof(Program));
+
+builder.Services.ResolveDependencies();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
