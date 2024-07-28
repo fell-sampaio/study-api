@@ -29,5 +29,6 @@ public class ProductService(IProductRepository productRepository,
     public void Dispose()
     {
         _productRepository?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

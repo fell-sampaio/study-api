@@ -69,5 +69,6 @@ public class SupplierService(ISupplierRepository supplierRepository,
     {
         _supplierRepository?.Dispose();
         _adressRepository?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
