@@ -8,5 +8,5 @@ public class Supplier : Entity
     public bool Active { get; set; }
 
     /* EF Relations */
-    public IEnumerable<Product> Products { get; set; } = [];
+    public IEnumerable<Product> Products { get; set; }
 }
