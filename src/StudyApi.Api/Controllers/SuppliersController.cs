@@ -25,7 +25,7 @@ public class SuppliersController(ISupplierRepository supplierRepository, ISuppli
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<IEnumerable<Supplier>>> GetById(Guid id)
     {
-        var supplier = await GetSupplierProductsAdress(id);
+        var supplier = await GetMappedSupplierProductsAdress(id);
 
         if (supplier == null) return NotFound();
 
@@ -63,7 +63,7 @@ public class SuppliersController(ISupplierRepository supplierRepository, ISuppli
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult<SupplierDto>> Delete(Guid id)
     {
-        var supplier = await GetSupplierWithAdress(id);
+        var supplier = await GetMappedSupplierWithAdress(id);
 
         if (supplier == null) return NotFound();
 
@@ -74,12 +74,12 @@ public class SuppliersController(ISupplierRepository supplierRepository, ISuppli
         return Ok(supplier);
     }
 
-    public async Task<SupplierDto> GetSupplierProductsAdress(Guid id)
+    public async Task<SupplierDto> GetMappedSupplierProductsAdress(Guid id)
     {
         return _mapper.Map<SupplierDto>(await _supplierRepository.GetSupplierProductsAdress(id));
     }
 
-    public async Task<SupplierDto> GetSupplierWithAdress(Guid id)
+    public async Task<SupplierDto> GetMappedSupplierWithAdress(Guid id)
     {
         return _mapper.Map<SupplierDto>(await _supplierRepository.GetSupplierAdress(id));
     }
