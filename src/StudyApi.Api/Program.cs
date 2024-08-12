@@ -3,6 +3,7 @@ using StudyApi.Data.Context;
 using AutoMapper.EquivalencyExpression;
 using StudyApi.Api.Configuration;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,11 @@ builder.Services.AddAutoMapper(config =>
 {
     config.AddCollectionMappers();
 }, typeof(Program));
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 builder.Services.ResolveDependencies();
 
