@@ -8,9 +8,15 @@ namespace StudyApi.Api.Controllers;
 
 [Route("api/suppliers")]
 [ApiController]
-public class SuppliersController(ISupplierRepository supplierRepository, ISupplierService supplierService, IMapper mapper) : MainController
+public class SuppliersController(
+    ISupplierRepository supplierRepository,
+    IAdressRepository adressRepository,
+    ISupplierService supplierService,
+    IMapper mapper,
+    INotifier notifier) : MainController(notifier)
 {
     private readonly ISupplierRepository _supplierRepository = supplierRepository;
+    private readonly IAdressRepository _adressRepository = adressRepository;
     private readonly ISupplierService _supplierService = supplierService;
     private readonly IMapper _mapper = mapper;
 
@@ -32,17 +38,20 @@ public class SuppliersController(ISupplierRepository supplierRepository, ISuppli
         return Ok(supplier);
     }
 
+    [HttpGet("get-adress/{id:guid}")]
+    public async Task<AdressDto> GetAdressById(Guid id)
+    {
+        return _mapper.Map<AdressDto>(await _adressRepository.GetById(id));
+    }
+
     [HttpPost]
     public async Task<ActionResult<SupplierDto>> Add(SupplierDto supplierDto)
     {
-        if (!ModelState.IsValid) return BadRequest();
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        var supplier = _mapper.Map<Supplier>(supplierDto);
-        var result = await _supplierService.Add(supplier);
+        await _supplierService.Add(_mapper.Map<Supplier>(supplierDto));
 
-        if (!result) return BadRequest();
-
-        return Ok(supplier);
+        return CustomResponse(supplierDto);
     }
 
     [HttpPut("{id:guid}")]
@@ -50,28 +59,35 @@ public class SuppliersController(ISupplierRepository supplierRepository, ISuppli
     {
         if (id != supplierDto.Id) return BadRequest();
 
-        if (!ModelState.IsValid) return BadRequest();
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        var supplier = _mapper.Map<Supplier>(supplierDto);
-        var result = await _supplierService.Update(supplier);
+        await _supplierService.Update(_mapper.Map<Supplier>(supplierDto));
 
-        if (!result) return BadRequest();
+        return CustomResponse(supplierDto);
+    }
 
-        return Ok(supplier);
+    [HttpPut("update-adress/{id:guid}")]
+    public async Task<IActionResult> UpdateAdress(Guid id, AdressDto adressDto)
+    {
+        if (id != adressDto.Id) return BadRequest();
+
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        await _supplierService.UpdateAdress(_mapper.Map<Adress>(adressDto));
+
+        return CustomResponse(adressDto);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult<SupplierDto>> Delete(Guid id)
     {
-        var supplier = await GetMappedSupplierWithAdress(id);
+        var supplierDto = await GetMappedSupplierWithAdress(id);
 
-        if (supplier == null) return NotFound();
+        if (supplierDto == null) return NotFound();
 
-        var result = await _supplierService.Delete(id);
+        await _supplierService.Delete(id);
 
-        if (!result) return BadRequest();
-
-        return Ok(supplier);
+        return CustomResponse();
     }
 
     public async Task<SupplierDto> GetMappedSupplierProductsAdress(Guid id)
