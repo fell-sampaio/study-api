@@ -90,12 +90,12 @@ public class SuppliersController(
         return CustomResponse();
     }
 
-    public async Task<SupplierDto> GetMappedSupplierProductsAdress(Guid id)
+    private async Task<SupplierDto> GetMappedSupplierProductsAdress(Guid id)
     {
         return _mapper.Map<SupplierDto>(await _supplierRepository.GetSupplierProductsAdress(id));
     }
 
-    public async Task<SupplierDto> GetMappedSupplierWithAdress(Guid id)
+    private async Task<SupplierDto> GetMappedSupplierWithAdress(Guid id)
     {
         return _mapper.Map<SupplierDto>(await _supplierRepository.GetSupplierAdress(id));
     }
