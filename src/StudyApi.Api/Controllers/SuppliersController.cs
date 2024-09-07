@@ -15,15 +15,10 @@ public class SuppliersController(
     IMapper mapper,
     INotifier notifier) : MainController(notifier)
 {
-    private readonly ISupplierRepository _supplierRepository = supplierRepository;
-    private readonly IAdressRepository _adressRepository = adressRepository;
-    private readonly ISupplierService _supplierService = supplierService;
-    private readonly IMapper _mapper = mapper;
-
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Supplier>>> GetAll()
     {
-        var suppliers = _mapper.Map<IEnumerable<SupplierDto>>(await _supplierRepository.GetAll());
+        var suppliers = mapper.Map<IEnumerable<SupplierDto>>(await supplierRepository.GetAll());
 
         return Ok(suppliers);
     }
@@ -41,7 +36,7 @@ public class SuppliersController(
     [HttpGet("get-adress/{id:guid}")]
     public async Task<AdressDto> GetAdressById(Guid id)
     {
-        return _mapper.Map<AdressDto>(await _adressRepository.GetById(id));
+        return mapper.Map<AdressDto>(await adressRepository.GetById(id));
     }
 
     [HttpPost]
@@ -49,7 +44,7 @@ public class SuppliersController(
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        await _supplierService.Add(_mapper.Map<Supplier>(supplierDto));
+        await supplierService.Add(mapper.Map<Supplier>(supplierDto));
 
         return CustomResponse(supplierDto);
     }
@@ -61,7 +56,7 @@ public class SuppliersController(
 
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        await _supplierService.Update(_mapper.Map<Supplier>(supplierDto));
+        await supplierService.Update(mapper.Map<Supplier>(supplierDto));
 
         return CustomResponse(supplierDto);
     }
@@ -73,7 +68,7 @@ public class SuppliersController(
 
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        await _supplierService.UpdateAdress(_mapper.Map<Adress>(adressDto));
+        await supplierService.UpdateAdress(mapper.Map<Adress>(adressDto));
 
         return CustomResponse(adressDto);
     }
@@ -85,18 +80,18 @@ public class SuppliersController(
 
         if (supplierDto == null) return NotFound();
 
-        await _supplierService.Delete(id);
+        await supplierService.Delete(id);
 
         return CustomResponse();
     }
 
     private async Task<SupplierDto> GetMappedSupplierProductsAdress(Guid id)
     {
-        return _mapper.Map<SupplierDto>(await _supplierRepository.GetSupplierProductsAdress(id));
+        return mapper.Map<SupplierDto>(await supplierRepository.GetSupplierProductsAdress(id));
     }
 
     private async Task<SupplierDto> GetMappedSupplierWithAdress(Guid id)
     {
-        return _mapper.Map<SupplierDto>(await _supplierRepository.GetSupplierAdress(id));
+        return mapper.Map<SupplierDto>(await supplierRepository.GetSupplierAdress(id));
     }
 }

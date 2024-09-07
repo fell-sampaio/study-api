@@ -53,19 +53,19 @@ public class ProductsController(INotifier notifier, IProductRepository productRe
 
     private bool FileUpload(string file, string imgName)
     {
-        var imageDataByteArray = Convert.FromBase64String(file);
-
-        if (file == null || file.Length <= 0)
+        if (string.IsNullOrEmpty(file))
         {
-            NotificateError("Provide an image for this product!");
+            NotifyError("Provide an image for this product!");
             return false;
         }
+
+        var imageDataByteArray = Convert.FromBase64String(file);
 
         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", imgName);
 
         if (System.IO.File.Exists(filePath))
         {
-            NotificateError("There is already a file with this name!");
+            NotifyError("There is already a file with this name!");
             return false;
         }
 
