@@ -11,5 +11,8 @@ public class MapProfile: Profile
         CreateMap<SupplierDto, Supplier>().ReverseMap();
         CreateMap<AdressDto, Adress>().ReverseMap();
         CreateMap<ProductDto, Product>();
+
+        CreateMap<Product, ProductDto>()
+            .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier.Name));
     }
 }
