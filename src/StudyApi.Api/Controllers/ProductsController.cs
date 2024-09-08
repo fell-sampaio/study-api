@@ -39,6 +39,41 @@ public class ProductsController(INotifier notifier, IProductRepository productRe
         return CustomResponse(productDto);
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, ProductDto productDto)
+    {
+        if (id != productDto.Id)
+        {
+            NotifyError("Product not found!");
+            return CustomResponse();
+        }
+
+        var productUpdate = await GetProduct(id);
+        productDto.Image = productUpdate.Image;
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        if (productDto.ImageUpload != null)
+        {
+            var imageName = Guid.NewGuid() + "_" + productDto.Image;
+            if (!FileUpload(productDto.ImageUpload, imageName))
+            {
+                return CustomResponse(ModelState);
+            }
+
+            productUpdate.Image = imageName;
+        }
+
+        productUpdate.Name = productDto.Name;
+        productDto.SupplierId = productDto.SupplierId;
+        productUpdate.Description = productDto.Description;
+        productUpdate.Value = productDto.Value;
+        productUpdate.Active = productDto.Active;
+
+        await productService.Update(mapper.Map<Product>(productUpdate));
+
+        return CustomResponse(productDto);
+    }
+
     [HttpPost("Add")]
     public async Task<ActionResult<ProductDto>> AddAlternative(ProductImageDto productDto)
     {
