@@ -39,6 +39,27 @@ public class ProductsController(INotifier notifier, IProductRepository productRe
         return CustomResponse(productDto);
     }
 
+    [HttpPost("Add")]
+    public async Task<ActionResult<ProductDto>> AddAlternative(ProductImageDto productDto)
+    {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        var imagePrefix = Guid.NewGuid() + "_";
+        if (!await AlternativeFileUpload(productDto.ImageUpload, imagePrefix)) return CustomResponse(ModelState);
+
+        productDto.Image = imagePrefix + productDto.ImageUpload.FileName;
+        await productService.Add(mapper.Map<Product>(productDto));
+
+        return CustomResponse(productDto);
+    }
+
+    [RequestSizeLimit(40000000)] // Use this in IFormFile and not in strings
+    [HttpPost("image")]
+    public ActionResult<ProductDto> AddImage(IFormFile file)
+    {
+        return Ok(file);
+    }
+
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult<ProductDto>> Delete(Guid id)
     {
@@ -70,6 +91,28 @@ public class ProductsController(INotifier notifier, IProductRepository productRe
         }
 
         System.IO.File.WriteAllBytes(filePath, imageDataByteArray);
+
+        return true;
+    }
+
+    private async Task<bool> AlternativeFileUpload(IFormFile file, string imgPrefix)
+    {
+        if (file == null || file.Length <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "Provide an image for this product!");
+            return false;
+        }
+
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", imgPrefix + file.FileName);
+
+        if (System.IO.File.Exists(path))
+        {
+            ModelState.AddModelError(string.Empty, "There is already a file with this name!");
+            return false;
+        }
+
+        using var stream = new FileStream(path, FileMode.Create);
+        await file.CopyToAsync(stream);
 
         return true;
     }
