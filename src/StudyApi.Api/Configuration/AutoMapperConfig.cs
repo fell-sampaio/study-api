@@ -2,11 +2,11 @@
 using StudyApi.Api.DTOs;
 using StudyApi.Business.Models;
 
-namespace StudyApi.Api.Mapping;
+namespace StudyApi.Api.Configuration;
 
-public class MapProfile: Profile
+public class AutoMapperConfig : Profile
 {
-    public MapProfile()
+    public AutoMapperConfig()
     {
         CreateMap<SupplierDto, Supplier>().ReverseMap();
         CreateMap<AdressDto, Adress>().ReverseMap();

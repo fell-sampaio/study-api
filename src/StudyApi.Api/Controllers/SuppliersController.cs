@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyApi.Api.DTOs;
 using StudyApi.Business.Interfaces;
@@ -6,8 +7,8 @@ using StudyApi.Business.Models;
 
 namespace StudyApi.Api.Controllers;
 
+[Authorize]
 [Route("api/suppliers")]
-[ApiController]
 public class SuppliersController(
     ISupplierRepository supplierRepository,
     IAdressRepository adressRepository,

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StudyApi.Api.Extensions;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace StudyApi.Api.DTOs;
 
-[ModelBinder(BinderType = typeof(ProductModelBinder)]
+[ModelBinder(BinderType = typeof(ProductModelBinder))]
 public class ProductImageDto
 {
     [Key]
